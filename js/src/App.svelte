@@ -1,11 +1,5 @@
 <script lang="ts">
-    import {onMount} from 'svelte';
-    import {client} from 'twirpscript';
     import * as TestService from './service.pb';
-
-    onMount(() => {
-        client.baseURL = `${window.location.protocol}//${window.location.host}`;
-    });
 
     let a: number | undefined = undefined;
     let b: number | undefined = undefined;
