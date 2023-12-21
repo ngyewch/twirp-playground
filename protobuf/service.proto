@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "github.com/ngyewch/twirp-playground/rpc";
+
+service TestService {
+    rpc Add(AddRequest) returns (AddResponse);
+}
+
+message AddRequest {
+    float a = 1;
+    float b = 2;
+}
+
+message AddResponse {
+    float value = 1;
+}

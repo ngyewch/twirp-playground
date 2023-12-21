@@ -1,0 +1,23 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Clean
+    cmds:
+      - rm -rf build
+
+  build:
+    desc: Build
+    deps: [ install-tools ]
+    cmds:
+      - mkdir -p build
+      - go mod download
+      - go mod tidy
+      - go generate ./...
+      - go build -o build/twirp-playground .
+
+  install-tools:
+    desc: Install tools
+    cmds:
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go
+      - go install github.com/twitchtv/twirp/protoc-gen-twirp
