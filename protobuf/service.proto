@@ -1,4 +1,6 @@
 syntax = "proto3";
+
+option java_package = "rpc";
 option go_package = "github.com/ngyewch/twirp-playground/rpc";
 
 service TestService {
