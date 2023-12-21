@@ -1,0 +1,22 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Clean
+    cmds:
+      - rm -rf build
+
+  build:
+    desc: Build
+    cmds:
+      - go mod download
+      - go mod tidy
+      - mkdir -p build
+      - go install .
+
+  test:
+    desc: Test
+    deps: [ build ]
+    cmds:
+      - mkdir -p build
+      - protoc -I ../protobuf --twirp-java_out=build ../protobuf/service.proto
