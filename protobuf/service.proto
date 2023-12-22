@@ -3,12 +3,17 @@ syntax = "proto3";
 option java_package = "rpc";
 option java_multiple_files = true;
 option java_outer_classname = "Rpc";
-option java_generic_services = true;
 
 option go_package = "github.com/ngyewch/twirp-playground/rpc";
 
+import "model.proto";
+
 service TestService {
     rpc Add(AddRequest) returns (AddResponse);
+}
+
+service TestService2 {
+    rpc DoSomething(DoSomethingRequest) returns (DoSomethingResponse);
 }
 
 message AddRequest {

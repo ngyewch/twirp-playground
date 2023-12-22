@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "rpc2";
+option java_multiple_files = true;
+option java_outer_classname = "Rpc";
+
+option go_package = "github.com/ngyewch/twirp-playground/rpc2";
+
+message DoSomethingRequest {
+    string text = 1;
+}
+
+message DoSomethingResponse {
+    string text = 1;
+}
