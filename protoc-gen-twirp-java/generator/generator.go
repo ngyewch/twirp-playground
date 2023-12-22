@@ -121,7 +121,7 @@ func toServiceDescriptor(service *protogen.Service) ServiceDescriptor {
 }
 
 func convertMessageToJavaType(message *protogen.Message) string {
-	jpf := NewJavaProtoFile(message.Desc.ParentFile())
+	pfw := NewProtoFileWrapper(message.Desc.ParentFile())
 	jc := JavaClassName(strcase.ToCamel(string(message.Desc.Name())))
-	return string(jpf.Package.Resolve(jc))
+	return string(pfw.JavaPackage().Resolve(jc))
 }
