@@ -13,7 +13,7 @@ type Generator struct {
 }
 
 type TemplateData struct {
-	ProtoFile          ProtoFileWrapper
+	ProtoFile          FileDescriptorWrapper
 	JavaOuterClassName string
 	Services           []ServiceDescriptor
 }
@@ -32,18 +32,6 @@ type MethodDescriptor struct {
 type JavaInterface struct {
 	Name    string
 	Methods []JavaMethod
-}
-
-type JavaMethod struct {
-	Name       string
-	ReturnType string
-	Arguments  []JavaMethodArgument
-	Throws     []string
-}
-
-type JavaMethodArgument struct {
-	Name string
-	Type string
 }
 
 func New() (*Generator, error) {
@@ -69,7 +57,7 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			continue
 		}
 
-		pfw := NewProtoFileWrapper(f.Desc)
+		pfw := WrapFileDescriptor(f.Desc)
 
 		templateData := TemplateData{
 			ProtoFile: pfw,
@@ -121,7 +109,7 @@ func toServiceDescriptor(service *protogen.Service) ServiceDescriptor {
 }
 
 func convertMessageToJavaType(message *protogen.Message) string {
-	pfw := NewProtoFileWrapper(message.Desc.ParentFile())
+	pfw := WrapFileDescriptor(message.Desc.ParentFile())
 	jc := JavaClassName(strcase.ToCamel(string(message.Desc.Name())))
 	return string(pfw.JavaPackage().Resolve(jc))
 }

@@ -8,14 +8,14 @@ import (
 	"strings"
 )
 
-type ProtoFileWrapper struct {
+type FileDescriptorWrapper struct {
 	fd                 protoreflect.FileDescriptor
 	javaPackage        JavaPackage
 	javaOuterClassName JavaClassName
 	javaMultipleFiles  bool
 }
 
-func NewProtoFileWrapper(fd protoreflect.FileDescriptor) ProtoFileWrapper {
+func WrapFileDescriptor(fd protoreflect.FileDescriptor) FileDescriptorWrapper {
 	javaPackage := ""
 	javaOuterClassName := filenameToJavaClassName(fd.Path())
 	javaMultipleFiles := false
@@ -29,7 +29,7 @@ func NewProtoFileWrapper(fd protoreflect.FileDescriptor) ProtoFileWrapper {
 		javaMultipleFiles = options.GetJavaMultipleFiles()
 	}
 
-	return ProtoFileWrapper{
+	return FileDescriptorWrapper{
 		fd:                 fd,
 		javaPackage:        JavaPackage(javaPackage),
 		javaOuterClassName: javaOuterClassName,
@@ -37,15 +37,15 @@ func NewProtoFileWrapper(fd protoreflect.FileDescriptor) ProtoFileWrapper {
 	}
 }
 
-func (w ProtoFileWrapper) JavaPackage() JavaPackage {
+func (w FileDescriptorWrapper) JavaPackage() JavaPackage {
 	return w.javaPackage
 }
 
-func (w ProtoFileWrapper) JavaOuterClassName() JavaClassName {
+func (w FileDescriptorWrapper) JavaOuterClassName() JavaClassName {
 	return w.javaOuterClassName
 }
 
-func (w ProtoFileWrapper) JavaFullOuterClassName() JavaClassName {
+func (w FileDescriptorWrapper) JavaFullOuterClassName() JavaClassName {
 	return w.javaPackage.Resolve(w.javaOuterClassName)
 }
 
