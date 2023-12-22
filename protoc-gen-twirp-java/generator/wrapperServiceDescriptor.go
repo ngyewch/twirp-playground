@@ -31,3 +31,7 @@ func (w ServiceDescriptorWrapper) Name() string {
 func (w ServiceDescriptorWrapper) JavaClassName() JavaClassName {
 	return w.javaClassName
 }
+
+func (w ServiceDescriptorWrapper) Methods() []MethodDescriptorWrapper {
+	return w.methods
+}

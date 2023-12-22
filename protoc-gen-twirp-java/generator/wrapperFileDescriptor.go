@@ -59,6 +59,10 @@ func (w FileDescriptorWrapper) JavaFullOuterClassName() JavaClassName {
 	return w.javaPackage.Resolve(w.javaOuterClassName)
 }
 
+func (w FileDescriptorWrapper) Services() []ServiceDescriptorWrapper {
+	return w.services
+}
+
 func filenameToJavaClassName(path string) JavaClassName {
 	baseName := filepath.Base(path)
 	if strings.HasSuffix(baseName, ".proto") {

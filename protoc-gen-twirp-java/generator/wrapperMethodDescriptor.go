@@ -26,6 +26,14 @@ func WrapMethodDescriptor(md protoreflect.MethodDescriptor) MethodDescriptorWrap
 	}
 }
 
+func (w MethodDescriptorWrapper) Name() string {
+	return string(w.md.Name())
+}
+
+func (w MethodDescriptorWrapper) JavaMethod() JavaMethod {
+	return w.javaMethod
+}
+
 func messageDescriptorToJavaType(md protoreflect.MessageDescriptor) string {
 	fdw := WrapFileDescriptor(md.ParentFile(), false)
 	jc := JavaClassName(strcase.ToCamel(string(md.Name())))

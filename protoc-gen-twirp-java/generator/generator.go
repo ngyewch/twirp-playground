@@ -2,7 +2,6 @@ package generator
 
 import (
 	"bytes"
-	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 	"log"
 	"text/template"
@@ -15,23 +14,6 @@ type Generator struct {
 type TemplateData struct {
 	ProtoFile          FileDescriptorWrapper
 	JavaOuterClassName string
-	Services           []ServiceDescriptor
-}
-
-type ServiceDescriptor struct {
-	Name          string
-	JavaInterface JavaInterface
-	Methods       []MethodDescriptor
-}
-
-type MethodDescriptor struct {
-	Name       string
-	JavaMethod JavaMethod
-}
-
-type JavaInterface struct {
-	Name    string
-	Methods []JavaMethod
 }
 
 func New() (*Generator, error) {
@@ -63,15 +45,6 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			ProtoFile: fdw,
 		}
 		templateData.JavaOuterClassName = string(fdw.JavaOuterClassName()) + "Twirp"
-		for _, service := range f.Services {
-			templateData.Services = append(templateData.Services, toServiceDescriptor(service))
-		}
-
-		for i := 0; i < f.Desc.Services().Len(); i++ {
-			service := f.Desc.Services().Get(i)
-			sdw := WrapServiceDescriptor(service)
-			log.Printf("%s / %s", sdw.Name(), sdw.JavaClassName())
-		}
 
 		outputBuffer := bytes.NewBuffer(nil)
 		err := g.templates.ExecuteTemplate(outputBuffer, "Twirp.java.tmpl", templateData)
@@ -87,35 +60,4 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 		}
 	}
 	return nil
-}
-
-func toServiceDescriptor(service *protogen.Service) ServiceDescriptor {
-	serviceDescriptor := ServiceDescriptor{
-		Name: string(service.Desc.Name()),
-		JavaInterface: JavaInterface{
-			Name: strcase.ToCamel(string(service.Desc.Name())),
-		},
-	}
-	for _, method := range service.Methods {
-		serviceDescriptor.Methods = append(serviceDescriptor.Methods, MethodDescriptor{
-			Name: string(method.Desc.Name()),
-			JavaMethod: JavaMethod{
-				ReturnType: convertMessageToJavaType(method.Output),
-				Name:       strcase.ToLowerCamel(string(method.Desc.Name())),
-				Arguments: []JavaMethodArgument{
-					{
-						Type: convertMessageToJavaType(method.Input),
-						Name: "input",
-					},
-				},
-			},
-		})
-	}
-	return serviceDescriptor
-}
-
-func convertMessageToJavaType(message *protogen.Message) string {
-	fdw := WrapFileDescriptor(message.Desc.ParentFile(), false)
-	jc := JavaClassName(strcase.ToCamel(string(message.Desc.Name())))
-	return string(fdw.JavaPackage().Resolve(jc))
 }
