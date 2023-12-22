@@ -18,5 +18,10 @@ tasks:
     desc: Test
     deps: [ build ]
     cmds:
-      - mkdir -p build
-      - protoc -I ../protobuf --twirp-java_out=build ../protobuf/service.proto
+      - rm -rf ${OUTPUT_DIR}
+      - mkdir -p ${OUTPUT_DIR}
+      - protoc -I ${PB_DIR} --twirp-java_out=${OUTPUT_DIR} ${PB_DIR}/service.proto
+      - protoc -I ${PB_DIR} --twirp-java_out=${OUTPUT_DIR} ${PB_DIR}/model.proto
+    env:
+      PB_DIR: ../protobuf
+      OUTPUT_DIR: ../java/build/generated/source/protoc-gen-twirp-java/main/java

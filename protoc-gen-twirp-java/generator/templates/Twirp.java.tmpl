@@ -1,0 +1,23 @@
+{{if .JavaPackage}}package {{.JavaPackage}};
+{{end}}
+public class {{.JavaOuterClassName}} {
+  {{range .Services}}
+  public interface {{.JavaInterface.Name}} {
+    {{range .Methods}}{{with .JavaMethod}}
+    {{.ReturnType}} {{.Name}}({{range $index, $arg := .Arguments}}{{if $index}}, {{end}}{{$arg.Type}} {{$arg.Name}}{{end}}){{if .Throws}} throws {{range $index, $t := .Throws}}{{if $index}}, {{end}}{{$t}}{{end}}{{end}};
+    {{end}}{{end}}
+  }
+  {{end}}
+
+  public static class Helidon {
+    {{range $index, $service := .Services}}
+    public static class {{$service.JavaInterface.Name}} {
+      public static void update(io.helidon.webserver.Routing.Rules rules, {{$.JavaOuterClassName}}.{{$service.JavaInterface.Name}} service) {
+        {{range $index2, $method := $service.Methods}}{{with $method.JavaMethod}}
+        rules.post("/{{$service.Name}}/{{$method.Name}}", (req, res) -> {});
+        {{end}}{{end}}
+      }
+    }
+    {{end}}
+  }
+}

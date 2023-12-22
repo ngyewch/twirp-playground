@@ -8,15 +8,21 @@ plugins {
 }
 
 sourceSets {
-  main {
-    proto {
-      srcDir("../protobuf")
+    main {
+        java {
+            srcDir("build/generated/source/protoc-gen-twirp-java/main/java")
+        }
+        proto {
+            srcDir("../protobuf")
+        }
     }
-  }
 }
 
 dependencies {
+    implementation(platform("io.helidon:helidon-bom:2.6.5"))
+
     implementation("com.google.protobuf:protobuf-java:3.25.1")
+    implementation("io.helidon.webserver:helidon-webserver")
 }
 
 repositories {
