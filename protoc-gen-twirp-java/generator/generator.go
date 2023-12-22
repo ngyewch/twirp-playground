@@ -13,7 +13,7 @@ type Generator struct {
 }
 
 type TemplateData struct {
-	JavaPackage        string
+	ProtoFile          ProtoFileWrapper
 	JavaOuterClassName string
 	Services           []ServiceDescriptor
 }
@@ -69,11 +69,12 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			continue
 		}
 
-		jpf := NewJavaProtoFile(f.Desc)
+		pfw := NewProtoFileWrapper(f.Desc)
 
-		var templateData TemplateData
-		templateData.JavaPackage = string(jpf.Package)
-		templateData.JavaOuterClassName = string(jpf.OuterClassName) + "Twirp"
+		templateData := TemplateData{
+			ProtoFile: pfw,
+		}
+		templateData.JavaOuterClassName = string(pfw.JavaOuterClassName()) + "Twirp"
 		for _, service := range f.Services {
 			templateData.Services = append(templateData.Services, toServiceDescriptor(service))
 		}
@@ -84,7 +85,7 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			return err
 		}
 
-		fullOuterClassName := JavaClassName(string(jpf.FullOuterClassName()) + "Twirp")
+		fullOuterClassName := JavaClassName(string(pfw.JavaFullOuterClassName()) + "Twirp")
 		generatedFile := gen.NewGeneratedFile(fullOuterClassName.Path(), f.GoImportPath)
 		_, err = generatedFile.Write(outputBuffer.Bytes())
 		if err != nil {

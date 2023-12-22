@@ -1,4 +1,4 @@
-{{if .JavaPackage}}package {{.JavaPackage}};
+{{if .ProtoFile.JavaPackage}}package {{.ProtoFile.JavaPackage}};
 {{end}}
 public class {{.JavaOuterClassName}} {
   {{range .Services}}
