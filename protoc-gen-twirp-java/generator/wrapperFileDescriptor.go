@@ -13,9 +13,10 @@ type FileDescriptorWrapper struct {
 	javaPackage        JavaPackage
 	javaOuterClassName JavaClassName
 	javaMultipleFiles  bool
+	services           []ServiceDescriptorWrapper
 }
 
-func WrapFileDescriptor(fd protoreflect.FileDescriptor) FileDescriptorWrapper {
+func WrapFileDescriptor(fd protoreflect.FileDescriptor, includeServices bool) FileDescriptorWrapper {
 	javaPackage := ""
 	javaOuterClassName := filenameToJavaClassName(fd.Path())
 	javaMultipleFiles := false
@@ -29,11 +30,20 @@ func WrapFileDescriptor(fd protoreflect.FileDescriptor) FileDescriptorWrapper {
 		javaMultipleFiles = options.GetJavaMultipleFiles()
 	}
 
+	var services []ServiceDescriptorWrapper
+	if includeServices {
+		for i := 0; i < fd.Services().Len(); i++ {
+			service := fd.Services().Get(i)
+			services = append(services, WrapServiceDescriptor(service))
+		}
+	}
+
 	return FileDescriptorWrapper{
 		fd:                 fd,
 		javaPackage:        JavaPackage(javaPackage),
 		javaOuterClassName: javaOuterClassName,
 		javaMultipleFiles:  javaMultipleFiles,
+		services:           services,
 	}
 }
 

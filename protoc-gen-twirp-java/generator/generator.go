@@ -57,14 +57,20 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			continue
 		}
 
-		pfw := WrapFileDescriptor(f.Desc)
+		fdw := WrapFileDescriptor(f.Desc, true)
 
 		templateData := TemplateData{
-			ProtoFile: pfw,
+			ProtoFile: fdw,
 		}
-		templateData.JavaOuterClassName = string(pfw.JavaOuterClassName()) + "Twirp"
+		templateData.JavaOuterClassName = string(fdw.JavaOuterClassName()) + "Twirp"
 		for _, service := range f.Services {
 			templateData.Services = append(templateData.Services, toServiceDescriptor(service))
+		}
+
+		for i := 0; i < f.Desc.Services().Len(); i++ {
+			service := f.Desc.Services().Get(i)
+			sdw := WrapServiceDescriptor(service)
+			log.Printf("%s / %s", sdw.Name(), sdw.JavaClassName())
 		}
 
 		outputBuffer := bytes.NewBuffer(nil)
@@ -73,7 +79,7 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 			return err
 		}
 
-		fullOuterClassName := JavaClassName(string(pfw.JavaFullOuterClassName()) + "Twirp")
+		fullOuterClassName := JavaClassName(string(fdw.JavaFullOuterClassName()) + "Twirp")
 		generatedFile := gen.NewGeneratedFile(fullOuterClassName.Path(), f.GoImportPath)
 		_, err = generatedFile.Write(outputBuffer.Bytes())
 		if err != nil {
@@ -109,7 +115,7 @@ func toServiceDescriptor(service *protogen.Service) ServiceDescriptor {
 }
 
 func convertMessageToJavaType(message *protogen.Message) string {
-	pfw := WrapFileDescriptor(message.Desc.ParentFile())
+	fdw := WrapFileDescriptor(message.Desc.ParentFile(), false)
 	jc := JavaClassName(strcase.ToCamel(string(message.Desc.Name())))
-	return string(pfw.JavaPackage().Resolve(jc))
+	return string(fdw.JavaPackage().Resolve(jc))
 }
