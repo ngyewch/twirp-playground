@@ -10,12 +10,12 @@ public class {{.JavaOuterClassName}} {
   {{end}}
 
   public static class Helidon {
-    {{range $index, $service := .ProtoFile.Services}}
-    public static class {{$service.JavaClassName}} {
-      public static void update(io.helidon.webserver.Routing.Rules rules, {{$.JavaOuterClassName}}.{{$service.JavaClassName}} service) {
-        {{range $index2, $method := $service.Methods}}{{with $method.JavaMethod}}
-        rules.post("/{{$service.Name}}/{{$method.Name}}", (req, res) -> {});
-        {{end}}{{end}}
+    {{range .ProtoFile.Services}}
+    public static class {{.JavaClassName}} {
+      public static void update(io.helidon.webserver.Routing.Rules rules, {{$.JavaOuterClassName}}.{{.JavaClassName}} service) {
+        {{range .Methods}}
+        rules.post("{{.TwirpPath}}", (req, res) -> {});
+        {{end}}
       }
     }
     {{end}}

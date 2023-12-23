@@ -7,12 +7,28 @@ import (
 
 type MethodDescriptorWrapper struct {
 	md         protoreflect.MethodDescriptor
+	twirpPath  string
 	javaMethod JavaMethod
 }
 
 func WrapMethodDescriptor(md protoreflect.MethodDescriptor) MethodDescriptorWrapper {
+	sd, ok := md.Parent().(protoreflect.ServiceDescriptor)
+	if !ok {
+		panic("expected ServiceDescriptor not found")
+	}
+	fd, ok := sd.Parent().(protoreflect.FileDescriptor)
+	if !ok {
+		panic("expected FileDescriptor not found")
+	}
+	twirpPath := "/"
+	if fd.Package() != "" {
+		twirpPath += string(fd.Package()) + "."
+	}
+	twirpPath += string(sd.Name()) + "/" + string(md.Name())
+
 	return MethodDescriptorWrapper{
-		md: md,
+		md:        md,
+		twirpPath: twirpPath,
 		javaMethod: JavaMethod{
 			Name:       strcase.ToLowerCamel(string(md.Name())),
 			ReturnType: messageDescriptorToJavaType(md.Output()),
@@ -32,6 +48,10 @@ func (w MethodDescriptorWrapper) Name() string {
 
 func (w MethodDescriptorWrapper) JavaMethod() JavaMethod {
 	return w.javaMethod
+}
+
+func (w MethodDescriptorWrapper) TwirpPath() string {
+	return w.twirpPath
 }
 
 func messageDescriptorToJavaType(md protoreflect.MessageDescriptor) string {
