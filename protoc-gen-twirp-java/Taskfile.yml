@@ -11,7 +11,6 @@ tasks:
     cmds:
       - go mod download
       - go mod tidy
-      - mkdir -p build
       - go install .
 
   test:
@@ -25,3 +24,24 @@ tasks:
     env:
       PB_DIR: ../protobuf
       OUTPUT_DIR: ../java/build/generated/source/protoc-gen-twirp-java/main/java
+
+  docker-build:
+    desc: Build Docker image
+    cmds:
+      - docker build --tag go-protoc-twirp-java:latest .
+
+  docker-inspect:
+    deps: [ docker-build ]
+    cmds:
+      - docker run --rm -it go-protoc-twirp-java:latest /bin/sh
+
+  docker-test:
+    deps: [ docker-build ]
+    cmds:
+      - mkdir -p build
+      - docker run --rm -it
+          --user $(id -u):$(id -g)
+          -v $(pwd)/../protobuf:/protobuf 
+          -v $(pwd)/build:/build
+          go-protoc-twirp-java:latest 
+          protoc --proto_path=/protobuf --twirp-java_out=/build service.proto
