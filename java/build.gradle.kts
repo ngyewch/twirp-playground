@@ -1,4 +1,5 @@
 plugins {
+    application
     java
     id("com.autonomousapps.dependency-analysis") version "1.28.0"
     id("com.diffplug.spotless") version "6.23.3"
@@ -19,9 +20,13 @@ sourceSets {
 }
 
 dependencies {
-    implementation(platform("io.helidon:helidon-bom:2.6.5"))
+    implementation(platform("io.helidon:helidon-bom:2.6.4"))
 
     implementation("com.google.protobuf:protobuf-java:3.25.1")
+    implementation("com.google.protobuf:protobuf-java-util:3.25.1")
+    implementation("io.helidon.common:helidon-common-http")
+    implementation("io.helidon.common:helidon-common-reactive")
+    implementation("io.helidon.media:helidon-media-common")
     implementation("io.helidon.webserver:helidon-webserver")
 }
 
@@ -33,6 +38,10 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.25.1"
     }
+}
+
+application {
+    mainClass = "Main"
 }
 
 versionsFilter {
