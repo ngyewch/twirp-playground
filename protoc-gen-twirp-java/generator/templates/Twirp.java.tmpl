@@ -1,6 +1,9 @@
 {{if .ProtoFile.JavaPackage}}package {{.ProtoFile.JavaPackage}};
 {{end}}
 public class {{.JavaOuterClassName}} {
+  private static final String PROTOBUF_CONTENT_TYPE = "application/protobuf";
+  private static final String JSON_CONTENT_TYPE = "application/json";
+
   {{range .ProtoFile.Services}}
   public interface {{.JavaClassName}} {
     {{range .Methods}}
@@ -14,10 +17,73 @@ public class {{.JavaOuterClassName}} {
     public static class {{.JavaClassName}} {
       public static void update(io.helidon.webserver.Routing.Rules rules, {{$.JavaOuterClassName}}.{{.JavaClassName}} service) {
         {{range .Methods}}
-        rules.post("{{.TwirpPath}}", (req, res) -> {});
+        {{$requestType := (index .JavaMethod.Arguments 0).Type}}
+        rules.post("{{.TwirpPath}}", (req, res) -> {
+          final {{$requestType}}.Builder requestBuilder = {{$requestType}}.newBuilder();
+          handleTwirp(req, res, requestBuilder, () -> service.{{.JavaMethod.Name}}(requestBuilder.build()));
+        });
         {{end}}
       }
     }
     {{end}}
+    private static void handleTwirp(
+        io.helidon.webserver.ServerRequest req,
+        io.helidon.webserver.ServerResponse res,
+        com.google.protobuf.Message.Builder messageBuilder,
+        java.util.function.Supplier<com.google.protobuf.Message> serviceInvoker) {
+      if (req.headers().contentType().isEmpty()) {
+        res.status(io.helidon.common.http.Http.Status.BAD_REQUEST_400)
+            .send("Content-Type not specified");
+        return;
+      }
+      final io.helidon.common.http.MediaType contentType = req.headers().contentType().get();
+      switch (contentType.toString()) {
+        case PROTOBUF_CONTENT_TYPE:
+          req.content()
+              .as(byte[].class)
+              .thenAccept(
+                  contentBytes -> {
+                    try {
+                      messageBuilder.mergeFrom(contentBytes);
+                      final com.google.protobuf.Message response = serviceInvoker.get();
+                      res.headers().contentType(contentType);
+                      res.send(response.toByteArray());
+                    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                      res.status(io.helidon.common.http.Http.Status.BAD_REQUEST_400)
+                          .send("Malformed content");
+                    } catch (Exception e) {
+                      res.status(io.helidon.common.http.Http.Status.INTERNAL_SERVER_ERROR_500)
+                          .send(e.toString());
+                    }
+                  });
+          break;
+        case JSON_CONTENT_TYPE:
+          req.content()
+              .as(String.class)
+              .thenAccept(
+                  contentString -> {
+                    try {
+                      com.google.protobuf.util.JsonFormat.parser()
+                          .merge(contentString, messageBuilder);
+                      final com.google.protobuf.Message response = serviceInvoker.get();
+                      final String json =
+                          com.google.protobuf.util.JsonFormat.printer().print(response);
+                      res.headers().contentType(contentType);
+                      res.send(json);
+                    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                      res.status(io.helidon.common.http.Http.Status.BAD_REQUEST_400)
+                          .send("Malformed content");
+                    } catch (Exception e) {
+                      res.status(io.helidon.common.http.Http.Status.INTERNAL_SERVER_ERROR_500)
+                          .send(e.toString());
+                    }
+                  });
+          break;
+        default:
+          res.status(io.helidon.common.http.Http.Status.BAD_REQUEST_400)
+              .send("Content-Type not supported");
+          break;
+      }
+    }
   }
 }
