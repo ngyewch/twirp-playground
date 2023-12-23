@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/ngyewch/twirp-playground/rpc"
 	"github.com/spf13/cobra"
-	"net/http"
 	"strconv"
 )
 
@@ -19,6 +18,11 @@ var (
 )
 
 func clientAdd(cmd *cobra.Command, args []string) error {
+	testServiceClient, err := newTestServiceClient(cmd)
+	if err != nil {
+		return err
+	}
+
 	a, err := strconv.ParseFloat(args[0], 64)
 	if err != nil {
 		return err
@@ -28,8 +32,6 @@ func clientAdd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-	testServiceClient := rpc.NewTestServiceProtobufClient("http://127.0.0.1:8080", &http.Client{})
 
 	response, err := testServiceClient.Add(context.Background(), &rpc.AddRequest{
 		A: float32(a),
