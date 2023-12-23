@@ -44,6 +44,26 @@ func newTestServiceClient(cmd *cobra.Command) (rpc.TestService, error) {
 	}
 }
 
+func newTestService2Client(cmd *cobra.Command) (rpc.TestService2, error) {
+	endpoint, err := getClientEndpoint(cmd)
+	if err != nil {
+		return nil, err
+	}
+	encoding, err := getClientEncoding(cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	switch encoding {
+	case "protobuf":
+		return rpc.NewTestService2ProtobufClient(endpoint, &http.Client{}), nil
+	case "json":
+		return rpc.NewTestService2JSONClient(endpoint, &http.Client{}), nil
+	default:
+		return nil, fmt.Errorf("unknown encoding")
+	}
+}
+
 func init() {
 	rootCmd.AddCommand(clientCmd)
 
