@@ -15,7 +15,7 @@ service TestService {
 }
 
 service TestService2 {
-    rpc DoSomething(example2.DoSomethingRequest) returns (example2.DoSomethingResponse);
+    rpc ToUpper(example2.ToUpperRequest) returns (example2.ToUpperResponse);
 }
 
 message AddRequest {

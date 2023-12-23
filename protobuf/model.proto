@@ -8,10 +8,10 @@ option java_outer_classname = "Rpc";
 
 option go_package = "github.com/ngyewch/twirp-playground/rpc2";
 
-message DoSomethingRequest {
+message ToUpperRequest {
     string text = 1;
 }
 
-message DoSomethingResponse {
+message ToUpperResponse {
     string text = 1;
 }

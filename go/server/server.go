@@ -16,8 +16,8 @@ func (s *Server) Add(ctx context.Context, request *rpc.AddRequest) (*rpc.AddResp
 	}, nil
 }
 
-func (s *Server) DoSomething(ctx context.Context, request *rpc2.DoSomethingRequest) (*rpc2.DoSomethingResponse, error) {
-	return &rpc2.DoSomethingResponse{
+func (s *Server) ToUpper(ctx context.Context, request *rpc2.ToUpperRequest) (*rpc2.ToUpperResponse, error) {
+	return &rpc2.ToUpperResponse{
 		Text: strings.ToUpper(request.Text),
 	}, nil
 }

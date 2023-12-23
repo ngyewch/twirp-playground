@@ -528,7 +528,7 @@ func (s *testServiceServer) PathPrefix() string {
 // ======================
 
 type TestService2 interface {
-	DoSomething(context.Context, *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error)
+	ToUpper(context.Context, *example2.ToUpperRequest) (*example2.ToUpperResponse, error)
 }
 
 // ============================
@@ -566,7 +566,7 @@ func NewTestService2ProtobufClient(baseURL string, client HTTPClient, opts ...tw
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(pathPrefix, "example", "TestService2")
 	urls := [1]string{
-		serviceURL + "DoSomething",
+		serviceURL + "ToUpper",
 	}
 
 	return &testService2ProtobufClient{
@@ -577,26 +577,26 @@ func NewTestService2ProtobufClient(baseURL string, client HTTPClient, opts ...tw
 	}
 }
 
-func (c *testService2ProtobufClient) DoSomething(ctx context.Context, in *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+func (c *testService2ProtobufClient) ToUpper(ctx context.Context, in *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "example")
 	ctx = ctxsetters.WithServiceName(ctx, "TestService2")
-	ctx = ctxsetters.WithMethodName(ctx, "DoSomething")
-	caller := c.callDoSomething
+	ctx = ctxsetters.WithMethodName(ctx, "ToUpper")
+	caller := c.callToUpper
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+		caller = func(ctx context.Context, req *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*example2.DoSomethingRequest)
+					typedReq, ok := req.(*example2.ToUpperRequest)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*example2.DoSomethingRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*example2.ToUpperRequest) when calling interceptor")
 					}
-					return c.callDoSomething(ctx, typedReq)
+					return c.callToUpper(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*example2.DoSomethingResponse)
+				typedResp, ok := resp.(*example2.ToUpperResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*example2.DoSomethingResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*example2.ToUpperResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -606,8 +606,8 @@ func (c *testService2ProtobufClient) DoSomething(ctx context.Context, in *exampl
 	return caller(ctx, in)
 }
 
-func (c *testService2ProtobufClient) callDoSomething(ctx context.Context, in *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
-	out := new(example2.DoSomethingResponse)
+func (c *testService2ProtobufClient) callToUpper(ctx context.Context, in *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
+	out := new(example2.ToUpperResponse)
 	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
@@ -658,7 +658,7 @@ func NewTestService2JSONClient(baseURL string, client HTTPClient, opts ...twirp.
 	serviceURL := sanitizeBaseURL(baseURL)
 	serviceURL += baseServicePath(pathPrefix, "example", "TestService2")
 	urls := [1]string{
-		serviceURL + "DoSomething",
+		serviceURL + "ToUpper",
 	}
 
 	return &testService2JSONClient{
@@ -669,26 +669,26 @@ func NewTestService2JSONClient(baseURL string, client HTTPClient, opts ...twirp.
 	}
 }
 
-func (c *testService2JSONClient) DoSomething(ctx context.Context, in *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+func (c *testService2JSONClient) ToUpper(ctx context.Context, in *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "example")
 	ctx = ctxsetters.WithServiceName(ctx, "TestService2")
-	ctx = ctxsetters.WithMethodName(ctx, "DoSomething")
-	caller := c.callDoSomething
+	ctx = ctxsetters.WithMethodName(ctx, "ToUpper")
+	caller := c.callToUpper
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+		caller = func(ctx context.Context, req *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*example2.DoSomethingRequest)
+					typedReq, ok := req.(*example2.ToUpperRequest)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*example2.DoSomethingRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*example2.ToUpperRequest) when calling interceptor")
 					}
-					return c.callDoSomething(ctx, typedReq)
+					return c.callToUpper(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*example2.DoSomethingResponse)
+				typedResp, ok := resp.(*example2.ToUpperResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*example2.DoSomethingResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*example2.ToUpperResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -698,8 +698,8 @@ func (c *testService2JSONClient) DoSomething(ctx context.Context, in *example2.D
 	return caller(ctx, in)
 }
 
-func (c *testService2JSONClient) callDoSomething(ctx context.Context, in *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
-	out := new(example2.DoSomethingResponse)
+func (c *testService2JSONClient) callToUpper(ctx context.Context, in *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
+	out := new(example2.ToUpperResponse)
 	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
 		twerr, ok := err.(twirp.Error)
@@ -812,8 +812,8 @@ func (s *testService2Server) ServeHTTP(resp http.ResponseWriter, req *http.Reque
 	}
 
 	switch method {
-	case "DoSomething":
-		s.serveDoSomething(ctx, resp, req)
+	case "ToUpper":
+		s.serveToUpper(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -822,7 +822,7 @@ func (s *testService2Server) ServeHTTP(resp http.ResponseWriter, req *http.Reque
 	}
 }
 
-func (s *testService2Server) serveDoSomething(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *testService2Server) serveToUpper(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -830,9 +830,9 @@ func (s *testService2Server) serveDoSomething(ctx context.Context, resp http.Res
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveDoSomethingJSON(ctx, resp, req)
+		s.serveToUpperJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveDoSomethingProtobuf(ctx, resp, req)
+		s.serveToUpperProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -840,9 +840,9 @@ func (s *testService2Server) serveDoSomething(ctx context.Context, resp http.Res
 	}
 }
 
-func (s *testService2Server) serveDoSomethingJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *testService2Server) serveToUpperJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "DoSomething")
+	ctx = ctxsetters.WithMethodName(ctx, "ToUpper")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -855,29 +855,29 @@ func (s *testService2Server) serveDoSomethingJSON(ctx context.Context, resp http
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
 		return
 	}
-	reqContent := new(example2.DoSomethingRequest)
+	reqContent := new(example2.ToUpperRequest)
 	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
 	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
 		return
 	}
 
-	handler := s.TestService2.DoSomething
+	handler := s.TestService2.ToUpper
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+		handler = func(ctx context.Context, req *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*example2.DoSomethingRequest)
+					typedReq, ok := req.(*example2.ToUpperRequest)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*example2.DoSomethingRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*example2.ToUpperRequest) when calling interceptor")
 					}
-					return s.TestService2.DoSomething(ctx, typedReq)
+					return s.TestService2.ToUpper(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*example2.DoSomethingResponse)
+				typedResp, ok := resp.(*example2.ToUpperResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*example2.DoSomethingResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*example2.ToUpperResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -886,7 +886,7 @@ func (s *testService2Server) serveDoSomethingJSON(ctx context.Context, resp http
 	}
 
 	// Call service method
-	var respContent *example2.DoSomethingResponse
+	var respContent *example2.ToUpperResponse
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -897,7 +897,7 @@ func (s *testService2Server) serveDoSomethingJSON(ctx context.Context, resp http
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *example2.DoSomethingResponse and nil error while calling DoSomething. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *example2.ToUpperResponse and nil error while calling ToUpper. nil responses are not supported"))
 		return
 	}
 
@@ -923,9 +923,9 @@ func (s *testService2Server) serveDoSomethingJSON(ctx context.Context, resp http
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *testService2Server) serveDoSomethingProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *testService2Server) serveToUpperProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "DoSomething")
+	ctx = ctxsetters.WithMethodName(ctx, "ToUpper")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -937,28 +937,28 @@ func (s *testService2Server) serveDoSomethingProtobuf(ctx context.Context, resp 
 		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
 		return
 	}
-	reqContent := new(example2.DoSomethingRequest)
+	reqContent := new(example2.ToUpperRequest)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
 	}
 
-	handler := s.TestService2.DoSomething
+	handler := s.TestService2.ToUpper
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *example2.DoSomethingRequest) (*example2.DoSomethingResponse, error) {
+		handler = func(ctx context.Context, req *example2.ToUpperRequest) (*example2.ToUpperResponse, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*example2.DoSomethingRequest)
+					typedReq, ok := req.(*example2.ToUpperRequest)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*example2.DoSomethingRequest) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*example2.ToUpperRequest) when calling interceptor")
 					}
-					return s.TestService2.DoSomething(ctx, typedReq)
+					return s.TestService2.ToUpper(ctx, typedReq)
 				},
 			)(ctx, req)
 			if resp != nil {
-				typedResp, ok := resp.(*example2.DoSomethingResponse)
+				typedResp, ok := resp.(*example2.ToUpperResponse)
 				if !ok {
-					return nil, twirp.InternalError("failed type assertion resp.(*example2.DoSomethingResponse) when calling interceptor")
+					return nil, twirp.InternalError("failed type assertion resp.(*example2.ToUpperResponse) when calling interceptor")
 				}
 				return typedResp, err
 			}
@@ -967,7 +967,7 @@ func (s *testService2Server) serveDoSomethingProtobuf(ctx context.Context, resp 
 	}
 
 	// Call service method
-	var respContent *example2.DoSomethingResponse
+	var respContent *example2.ToUpperResponse
 	func() {
 		defer ensurePanicResponses(ctx, resp, s.hooks)
 		respContent, err = handler(ctx, reqContent)
@@ -978,7 +978,7 @@ func (s *testService2Server) serveDoSomethingProtobuf(ctx context.Context, resp 
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *example2.DoSomethingResponse and nil error while calling DoSomething. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *example2.ToUpperResponse and nil error while calling ToUpper. nil responses are not supported"))
 		return
 	}
 
@@ -1583,21 +1583,20 @@ func callClientError(ctx context.Context, h *twirp.ClientHooks, err twirp.Error)
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 242 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x90, 0xbf, 0x4f, 0xc3, 0x30,
-	0x10, 0x85, 0xe5, 0x46, 0x80, 0x74, 0x29, 0x8b, 0xe9, 0x50, 0x55, 0x20, 0xa1, 0x32, 0xd0, 0x05,
-	0x07, 0x05, 0x31, 0xa3, 0x56, 0x4c, 0x4c, 0x28, 0x65, 0xea, 0xe6, 0xd8, 0xa7, 0x24, 0x52, 0x12,
-	0x1f, 0xfe, 0xd1, 0xd2, 0xff, 0x1e, 0x51, 0xb7, 0x22, 0x0c, 0x8c, 0xef, 0xf9, 0xf9, 0xfb, 0xa4,
-	0x83, 0x4b, 0x87, 0x76, 0xdb, 0x28, 0x14, 0x64, 0x8d, 0x37, 0xfc, 0x02, 0xbf, 0x64, 0x47, 0x2d,
-	0xce, 0xd2, 0xce, 0x68, 0x6c, 0x63, 0x3b, 0x5f, 0x00, 0x2c, 0xb5, 0x2e, 0xf0, 0x33, 0xa0, 0xf3,
-	0x7c, 0x0c, 0x4c, 0x4e, 0xd9, 0x2d, 0x5b, 0x8c, 0x0a, 0x26, 0x7f, 0x52, 0x39, 0x1d, 0xc5, 0x54,
-	0xce, 0xef, 0x20, 0x3d, 0x2c, 0x1d, 0x99, 0xde, 0x21, 0x9f, 0xc0, 0xd9, 0x56, 0xb6, 0x01, 0x8f,
-	0xf3, 0x18, 0xf2, 0x17, 0x48, 0x3f, 0xd0, 0xf9, 0x75, 0x34, 0xf3, 0x47, 0x48, 0x96, 0x5a, 0xf3,
-	0x2b, 0x71, 0x74, 0x8b, 0x5f, 0xd7, 0x6c, 0xf2, 0xb7, 0x8c, 0xd8, 0x7c, 0x03, 0xe3, 0x01, 0x20,
-	0xe7, 0x6f, 0x90, 0xbe, 0x9a, 0xb5, 0xe9, 0xd0, 0xd7, 0x4d, 0x5f, 0xf1, 0xeb, 0xd3, 0xa7, 0x5c,
-	0x0c, 0xea, 0x13, 0xf2, 0xe6, 0x9f, 0xd7, 0xc8, 0x5e, 0x3d, 0x43, 0x62, 0x49, 0xad, 0x92, 0x82,
-	0xd4, 0x3b, 0xdb, 0xdc, 0x57, 0x8d, 0xaf, 0x43, 0x29, 0x94, 0xe9, 0xb2, 0xbe, 0xda, 0xe3, 0x4e,
-	0xd5, 0x99, 0xdf, 0x35, 0x96, 0x1e, 0xa8, 0x95, 0xfb, 0xca, 0x9a, 0xd0, 0xeb, 0xcc, 0x92, 0x2a,
-	0xcf, 0x0f, 0x97, 0x7a, 0xfa, 0x0e, 0x00, 0x00, 0xff, 0xff, 0xe1, 0x49, 0xea, 0x98, 0x50, 0x01,
-	0x00, 0x00,
+	// 238 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x90, 0xbd, 0x4e, 0xc3, 0x30,
+	0x14, 0x85, 0xe5, 0x46, 0x50, 0xe9, 0xa6, 0x2c, 0xa6, 0x43, 0xe8, 0x84, 0xca, 0x40, 0x17, 0x1c,
+	0x14, 0xc4, 0x0a, 0x6a, 0x1f, 0x00, 0xa1, 0x50, 0x16, 0x36, 0xc7, 0xbe, 0x4a, 0x23, 0x25, 0xf1,
+	0xc5, 0x3f, 0x2d, 0x7d, 0x7b, 0x44, 0x9d, 0x0a, 0x90, 0x3a, 0x9e, 0xe3, 0xe3, 0xef, 0x93, 0x2e,
+	0x5c, 0x38, 0xb4, 0xdb, 0x46, 0xa1, 0x20, 0x6b, 0xbc, 0xe1, 0x63, 0xfc, 0x92, 0x1d, 0xb5, 0x38,
+	0x4b, 0x3b, 0xa3, 0xb1, 0x8d, 0xed, 0x7c, 0x01, 0xb0, 0xd4, 0xba, 0xc4, 0xcf, 0x80, 0xce, 0xf3,
+	0x09, 0x30, 0x99, 0xb1, 0x6b, 0xb6, 0x18, 0x95, 0x4c, 0xfe, 0xa4, 0x2a, 0x1b, 0xc5, 0x54, 0xcd,
+	0x6f, 0x20, 0x3d, 0x2c, 0x1d, 0x99, 0xde, 0x21, 0x9f, 0xc2, 0xd9, 0x56, 0xb6, 0x01, 0x87, 0x79,
+	0x0c, 0xc5, 0x33, 0xa4, 0x6b, 0x74, 0xfe, 0x2d, 0x9a, 0xf9, 0x3d, 0x24, 0x4b, 0xad, 0xf9, 0xa5,
+	0x18, 0xdc, 0xe2, 0xd7, 0x35, 0x9b, 0xfe, 0x2f, 0x23, 0xb6, 0x78, 0x81, 0xc9, 0x1f, 0x40, 0xc1,
+	0x9f, 0x60, 0xbc, 0x36, 0xef, 0x44, 0x68, 0x79, 0x76, 0xfc, 0x50, 0x88, 0xa1, 0x3a, 0xa2, 0xae,
+	0x4e, 0xbc, 0x44, 0xde, 0xea, 0x11, 0x12, 0x4b, 0x6a, 0x95, 0x94, 0xa4, 0x5e, 0xd9, 0xc7, 0x6d,
+	0xdd, 0xf8, 0x4d, 0xa8, 0x84, 0x32, 0x5d, 0xde, 0xd7, 0x7b, 0xdc, 0xa9, 0x4d, 0xee, 0x77, 0x8d,
+	0xa5, 0x3b, 0x6a, 0xe5, 0xbe, 0xb6, 0x26, 0xf4, 0x3a, 0xb7, 0xa4, 0xaa, 0xf3, 0xc3, 0x75, 0x1e,
+	0xbe, 0x03, 0x00, 0x00, 0xff, 0xff, 0x4b, 0x38, 0x45, 0xbf, 0x44, 0x01, 0x00, 0x00,
 }

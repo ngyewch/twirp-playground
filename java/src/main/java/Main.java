@@ -3,8 +3,8 @@ import io.helidon.webserver.WebServer;
 import rpc.AddRequest;
 import rpc.AddResponse;
 import rpc.RpcTwirp;
-import rpc2.DoSomethingRequest;
-import rpc2.DoSomethingResponse;
+import rpc2.ToUpperRequest;
+import rpc2.ToUpperResponse;
 
 public class Main {
   public static void main(String[] args) throws Exception {
@@ -35,8 +35,8 @@ public class Main {
   public static class TestService2 implements RpcTwirp.TestService2 {
 
     @Override
-    public DoSomethingResponse doSomething(DoSomethingRequest input) {
-      return DoSomethingResponse.newBuilder().setText(input.getText().toUpperCase()).build();
+    public ToUpperResponse toUpper(ToUpperRequest input) {
+      return ToUpperResponse.newBuilder().setText(input.getText().toUpperCase()).build();
     }
   }
 }
