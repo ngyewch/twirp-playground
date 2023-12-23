@@ -3,7 +3,6 @@ package generator
 import (
 	"bytes"
 	"google.golang.org/protobuf/compiler/protogen"
-	"log"
 	"text/template"
 )
 
@@ -32,8 +31,6 @@ func (g *Generator) Generate(gen *protogen.Plugin) error {
 		if !f.Generate {
 			continue
 		}
-
-		log.Printf("processing %s", f.Desc.Path())
 
 		if len(f.Services) == 0 {
 			continue
