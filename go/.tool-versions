@@ -1,3 +1,4 @@
-golang 1.21.5
-task 3.32.0
-protoc 25.1
+golang 1.21.6
+task 3.34.1
+protoc 25.2
+protoc-gen-go 1.32.0
